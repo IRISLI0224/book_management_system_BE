@@ -4,6 +4,8 @@ const User = require("../model/user");
 // create a book and return the created object
 exports.store = async (req, res) => {
   const { name, author, categories } = req.body;
+  //test console
+  console.log(req.body)
 
   //check if the book exists in the system
   const existingBook = await Book.findOne({ name, author });
@@ -88,8 +90,52 @@ exports.borrow = async (req, res) => {
     { new: true } //return the updated book
   ).exec();
 
-  return res.status(200).json(`User ${userid} borrowed book ${bookid}`);
+  return res.status(200).json(`book borrowed`);
 };
+
+
+
+// user:ID return book:ID 
+exports.return = async (req, res) => {
+  const { userid, bookid } = req.params;
+  //check if book is borrowed
+  const checkBook = await Book.findById(bookid);
+  if (!checkBook) return res.status(404).json({ error: "Can't find the book" });
+  if (!checkBook?.borrowed) return res.status(404).json({ error: "book is already returned" });
+
+  //remove the book to user
+  try {
+    const user = await User.findById(userid);
+    user.books.pull(bookid);
+    await user.save();
+    //res.sendStatus(204);
+  } catch (error) {
+    return res.status(404).json({ error: "Cannot find user" });
+  }
+
+  // //remove the user to book
+  // try {
+  //   const book = await Book.findById(bookid);
+  //   book.user=userid;
+  //   await book.save();
+  //  // res.sendStatus(204);
+  // } catch (error) {
+  //   return res.status(404).json({ error: "cannot find book" });
+  // }
+
+  const id=bookid;
+  const newBook = await Book.findByIdAndUpdate(
+    id,
+    {
+      borrowed:false
+    },
+    { new: true } //return the updated book
+  ).exec();
+
+  return res.status(200).json(`book returned`);
+};
+
+
 
 // delete a book by id
 exports.destroy = async (req, res) => {

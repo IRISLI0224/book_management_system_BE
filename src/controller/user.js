@@ -8,6 +8,12 @@ exports.index = async (req, res) => {
   res.status(200).json(users);
 };
 
+// display all users
+exports.recent = async (req, res) => {
+  const users = await User.find().limit(5);
+  res.status(200).json(users);
+};
+
 // create a new and return the created object
 exports.store = async (req, res) => {
   const { email, name, phone, date_of_birth } = req.body;
@@ -32,6 +38,7 @@ exports.store = async (req, res) => {
 
     return res.status(201).json(user);
   } catch (error) {
+    console.log(error)
     return res.status(404).json(error);
   }
 };
@@ -39,7 +46,7 @@ exports.store = async (req, res) => {
 // update one user by ID
 exports.update = async (req, res) => {
   const { id } = req.params;
-  const { email, phone, name, date_of_birth } = req.body;
+  const { phone, name, date_of_birth } = req.body;
 
   //check if the name exists in the system
   const existingName = await User.findOne({ name });

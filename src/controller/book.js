@@ -122,3 +122,22 @@ exports.show = async (req, res) => {
   if (!book) return res.status(404).json({ error: "book not found" });
   return res.status(200).json(book);
 };
+
+
+// display all books without status check
+exports.index = async (req, res) => {
+  // eslint-disable-next-line implicit-arrow-linebreak
+  const book = await Book.find()
+
+  if (!book) return res.status(404).json({ error: "No book in the database" });
+  return res.status(200).json(book);
+};
+
+// display at most books without status check
+exports.recent = async (req, res) => {
+  // eslint-disable-next-line implicit-arrow-linebreak
+  const book = await Book.find().limit(5);
+
+  if (!book) return res.status(404).json({ error: "No book in the database" });
+  return res.status(200).json(book);
+};

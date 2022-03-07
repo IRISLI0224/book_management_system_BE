@@ -4,4 +4,4 @@ Run by npm run dev
 Backend prod URL:https://desolate-everglades-87987.herokuapp.com/api/v1/
 
 #Dev url
-localhost://8080
+http://localhost:8080
